@@ -1,10 +1,8 @@
 class my_nodejs {
-  class { 'nodejs':
-    version => 'stable',
-  }
+  class { 'nodejs': }
 
   package { 'forever':
+    ensure   => 'present',
     provider => 'npm',
-    require  => Class['nodejs']
   }
 }
