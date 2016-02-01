@@ -3,11 +3,6 @@ class my_nodejs {
     version => 'stable',
   }
 
-  package { 'express':
-    provider => 'npm',
-    require  => Class['nodejs']
-  }
-
   package { 'forever':
     provider => 'npm',
     require  => Class['nodejs']
