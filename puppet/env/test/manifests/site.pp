@@ -1,3 +1,4 @@
+include my_users
 include my_yum
 include my_nginx
 include my_php
