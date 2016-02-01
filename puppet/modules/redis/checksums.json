@@ -1,0 +1,21 @@
+{
+  "Gemfile": "c0514114217ed57cd72fd797a1e68cba",
+  "LICENSE": "1906cc9accb05dcaf61c8cda63402170",
+  "README.md": "9a75159c9ecf227c2651155ff66271a5",
+  "Rakefile": "b42499a81c09ef05fd9dc6ae09c31466",
+  "manifests/config.pp": "85e2496b29b3cf2c6f8f629543c5da41",
+  "manifests/init.pp": "2e48a2e1e2224aa425603c0cb5d2d405",
+  "manifests/install.pp": "902717390c9b4570e4075b423cb496c6",
+  "manifests/params.pp": "e80177fa030b235ac2a34eb58bf37913",
+  "manifests/preinstall.pp": "8b3b544b6874d5948adbc8dfa5c95ac8",
+  "manifests/sentinel.pp": "68e3a2c40f9fe0f531db3687a9a3a25c",
+  "manifests/service.pp": "c9168b35085b84720fac6d73ef428c74",
+  "metadata.json": "b7bd6f6fb1077e4d3f52091a3704fe92",
+  "spec/classes/redis_sentinel_spec.rb": "150ae20aa53e2254350bb4f54f90badf",
+  "spec/classes/redis_spec.rb": "365d4b93a4781265df940fbd192a1b4c",
+  "spec/spec.opts": "e6d22f7dc7d9c1db75a1b58e490176c4",
+  "spec/spec_helper.rb": "da713d3580242c72f7bb6735ae00cdc6",
+  "templates/redis-sentinel.conf.erb": "ff49fa1ef407de2a176204f02149351d",
+  "templates/redis-sentinel.init.erb": "8a48b3290bc88599f0c37aa10cad64c5",
+  "templates/redis.conf.erb": "cc96af5aaeb1dfe21f0956de2b7fddb6"
+}

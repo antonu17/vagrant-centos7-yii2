@@ -1,0 +1,23 @@
+{
+  "LICENSE": "eb2bff57fd698394c098657a53c9e553",
+  "README.md": "e54b9c98cbca48e7fb6cc17ff4047bee",
+  "Rakefile": "a1a87b266213b03b33f5e006d4df7925",
+  "lib/facter/nodejs_functions.rb": "f3287f968f6d31d9b38df187b570c4b5",
+  "lib/facter/nodejs_installed_version.rb": "80b1937a870ba3dd41e022ac2fe7fe72",
+  "lib/facter/nodejs_latest_version.rb": "baa82a899c07918c48d378db5dc422ca",
+  "lib/facter/nodejs_stable_version.rb": "c6c5a3c32ef086fab5538cfc9350cb04",
+  "lib/puppet/parser/functions/is_binary_download_available.rb": "cb2ca5297ee30e540388afd2d33c92f4",
+  "lib/puppet/parser/functions/is_npm_provided.rb": "2dd62319cccd6124c5a23c1b5491fc4b",
+  "lib/puppet/provider/package/npm.rb": "384df989a2796d2b3003ae1459756b23",
+  "manifests/init.pp": "ee4487854734b6f306ef88639c816103",
+  "manifests/install.pp": "9d57b9c820249a1a41b0790995391538",
+  "manifests/npm.pp": "02b947254d6457974193ed9fdb7c80e8",
+  "manifests/params.pp": "7fc6e7d502ee96a1fb54f616ca9cbab2",
+  "metadata.json": "771c07ef6cc367d7c97430277fb30060",
+  "spec/classes/nodejs_spec.rb": "a94888fc8acc0ec184f5af9f0e4dc586",
+  "spec/defines/nodejs_install_spec.rb": "f3e728fa05324b85d56b6a94c5b067b0",
+  "spec/functions/is_binary_download_available_spec.rb": "63efc2c54b3610e1fa713ebcea74488b",
+  "spec/functions/is_npm_provided_spec.rb": "1dd3e5f1bbda4e58884b609e32e04cef",
+  "spec/spec_helper.rb": "f00bd239466fc9e43772924c5f576d3d",
+  "templates/nodejs.sh.erb": "466c00d530be32ce73ff8b80cf95bd2c"
+}

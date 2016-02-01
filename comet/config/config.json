@@ -1,0 +1,5 @@
+{
+  "port": 8890,
+  "origin-development": "http://farm.dev",
+  "origin-production": "http://torbor.ru"
+}
