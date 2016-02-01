@@ -6,3 +6,5 @@ include my_mariadb
 include my_firewall
 include my_redis
 include my_nodejs
+include my_java
+include my_elasticsearch
