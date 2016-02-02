@@ -13,4 +13,12 @@ class my_finish {
     stop    => '/var/www/node/shutdown.sh',
     pattern => '/usr/bin/node'
   }
+
+  file { '/var/log/php-fpm':
+    mode => '777',
+  }
+
+  file { '/var/log/php-fpm/error.log':
+    mode => '644',
+  }
 }
