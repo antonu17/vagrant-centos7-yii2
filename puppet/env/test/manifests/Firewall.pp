@@ -18,8 +18,13 @@ class my_firewall {
     proto   => tcp,
     action  => accept,
   }
-  firewall { '101 allow ssh access':
+  firewall { '102 allow ssh access':
     dport   => [22],
+    proto   => tcp,
+    action  => accept,
+  }
+  firewall { '103 allow ssh access':
+    dport   => [8890],
     proto   => tcp,
     action  => accept,
   }
