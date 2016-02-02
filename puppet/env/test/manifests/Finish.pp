@@ -13,4 +13,11 @@ class my_finish {
     environment => ['HOME=/var/www'],
     creates     => '/var/www/.config/composer/vendor/fxp/composer-asset-plugin/composer.json',
   }
+
+  service { 'comet':
+    ensure  => running,
+    start   => '/var/www/node/startup.sh',
+    stop    => '/var/www/node/shutdown.sh',
+    pattern => '/usr/bin/node'
+  }
 }
