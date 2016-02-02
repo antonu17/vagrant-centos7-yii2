@@ -1,52 +1,60 @@
-require "#{File.join(File.dirname(__FILE__),'..','spec_helper.rb')}"
+require 'spec_helper'
 
-describe 'php' do
+describe 'php', :type => :class do
+  let(:facts) { { :osfamily        => 'Debian',
+                  :lsbdistid       => 'Debian',
+                  :operatingsystem => 'Debian',
+                  :path            => '/usr/local/bin:/usr/bin:/bin' } }
 
-  let(:title) { 'php' }
-  let(:node) { 'rspec.example42.com' }
-  let(:facts) { { :ipaddress => '10.42.42.42' } }
-
-  describe 'Test standard installation' do
-    it { should contain_package('php').with_ensure('present') }
-    it { should contain_file('php.conf').with_ensure('present') }
+  describe 'when called with no parameters on Debian' do
+    it {
+      should contain_package('php5-cli').with({
+        'ensure' => 'present',
+      })
+      should contain_class('php::fpm')
+      should contain_package('php5-fpm').with({
+        'ensure' => 'present',
+      })
+      should contain_package('php5-dev').with({
+        'ensure' => 'present',
+      })
+      should contain_package('php-pear').with({
+        'ensure' => 'present',
+      })
+      should contain_class('php::composer')
+    }
   end
 
-  describe 'Test installation of a specific version' do
-    let(:params) { {:version => '1.0.42' } }
-    it { should contain_package('php').with_ensure('1.0.42') }
+  describe 'when called with no parameters on Suse' do
+    let(:facts) { { :osfamily => 'Suse',
+                    :operatingsystem => 'SLES',
+                    :path     => '/usr/local/bin:/usr/bin:/bin' } }
+    it {
+      should contain_package('php5').with({
+        'ensure' => 'present',
+      })
+      should contain_package('php5-devel').with({
+        'ensure' => 'present',
+      })
+      should contain_package('php5-pear').with({
+        'ensure' => 'present',
+      })
+      should_not contain_package('php5-cli')
+      should_not contain_package('php5-dev')
+      should_not contain_package('php-pear')
+    }
   end
 
-  describe 'Test decommissioning - absent' do
-    let(:params) { {:absent => true, :monitor => true } }
-
-    it 'should remove Package[php]' do should contain_package('php').with_ensure('absent') end 
-    it 'should remove php configuration file' do should contain_file('php.conf').with_ensure('absent') end
+  describe 'when fpm is disabled' do
+    let(:params) { { :fpm => false, } }
+    it {
+      should_not contain_class('php::fpm')
+    }
   end
-
-  describe 'Test customizations - template' do
-    let(:params) { {:template => "php/spec.erb" , :options => { 'opt_a' => 'value_a' } } }
-    it { should contain_file('php.conf').with_content(/fqdn: rspec.example42.com/) }
-    it { should contain_file('php.conf').with_content(/value_a/) }
+  describe 'when composer is disabled' do
+    let(:params) { { :composer => false, } }
+    it {
+      should_not contain_class('php::composer')
+    }
   end
-
-  describe 'Test customizations - source' do
-    let(:params) { {:source => "puppet://modules/php/spec" , :source_dir => "puppet://modules/php/dir/spec" , :source_dir_purge => true } }
-    it { should contain_file('php.conf').with_source('puppet://modules/php/spec') }
-    it { should contain_file('php.dir').with_source('puppet://modules/php/dir/spec') }
-    it { should contain_file('php.dir').with_purge('true') }
-  end
-
-  describe 'Test customizations - custom class' do
-    let(:params) { {:my_class => "php::spec" } }
-    it { should contain_file('php.conf').with_content(/fqdn: rspec.example42.com/) }
-  end
-
-  describe 'Test Puppi Integration' do
-    let(:params) { {:puppi => true, :puppi_helper => "myhelper"} }
-
-    it { should contain_puppi__ze('php').with_helper('myhelper') }
-  end
-
-
 end
-

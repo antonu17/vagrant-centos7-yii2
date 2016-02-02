@@ -14,4 +14,8 @@ class my_yum {
   package { 'rubygems':
     ensure => present
   }
+
+  package { 'vim-enhanced':
+    ensure => present
+  }
 }

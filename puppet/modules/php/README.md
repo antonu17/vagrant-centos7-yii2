@@ -1,185 +1,176 @@
-# Puppet module: php
+# mayflower/php Puppet Module
+
+[![GitHub version](https://badge.fury.io/gh/mayflower%2Fpuppet-php.svg)](https://github.com/mayflower/puppet-php)
+[![Build Status](https://travis-ci.org/mayflower/puppet-php.svg?branch=master)](https://travis-ci.org/mayflower/puppet-php)
+
+mayflower/php is a Puppet module for managing PHP with a strong focus
+on php-fpm. We strive to support all recent versions of Debian, Ubuntu,
+RedHat/CentOS, openSUSE/SLES and FreeBSD. Managing Apache with `mod_php`
+is not supported.
+
+This originally was a fork of [jippi/puppet-php](https://github.com/jippi/puppet-php)
+(nodes-php on Puppet Forge) but has since been rewritten in large parts.
+
+## Usage
+
+The module aims to use sane defaults for the supported architectures. You
+must use hiera to configure most aspects of this module in a simple way.
+
+The recommended way is to include the `php` main class in your manifests:
+
+```puppet
+include ::php
+```
+
+You can configure the module through hiera. Here are the defaults for some
+parameters as you would specify them in hiera:
+
+```yaml
+php::ensure: latest
+php::manage_repos: true
+php::fpm: true
+php::dev: true
+php::composer: true
+php::pear: true
+php::phpunit: false
+php::fpm::config::log_level: notice
+php::composer::auto_update: true
+```
+
+There are more configuration options available. Please refer to the
+auto-generated documention at http://php.puppet.mayflower.de/.
 
-This is a Puppet module for php based on the second generation layout ("NextGen") of Example42 Puppet Modules.
+### Defining `php.ini` settings
 
-Made by ALessandro Franceschi / Lab42
+PHP configuration parmaters in `php.ini` files can be defined as parameter
+`settings` on the `php`, `php::fpm` and `php::cli` classes or
+`php::extension` resources for each component independently.
 
-Official site: http://www.example42.com
+These settings are written into their respective `php.ini` file. Global
+settings in `php::settings` are merged with the settings of all components.
+Please note that settings of extensions are always independent.
 
-Official git repository: http://github.com/example42/puppet-php
+In the following example the timezone will be set in the PHP cli application
+and all php-fpm pools.
 
-Released under the terms of Apache 2 License.
+```yaml
+php::settings:
+  Date/date.timezone: Europe/Berlin
+php::cli::settings:
+  PHP/memory_limit: 512M
+php::fpm::settings:
+  PHP/short_open_tag: 'On'
+```
 
-This module requires functions provided by the Example42 Puppi module (you need it even if you don't use and install Puppi)
+### Installing extensions
 
-For detailed info about the logic and usage patterns of Example42 modules check the DOCS directory on Example42 main modules set.
+Extensions can be installed and configured by defining the hash
+`php::extensions` in hiera. They are activated for all activated SAPIs.
 
-## USAGE - Basic management
+```yaml
+php::extensions:
+  json: {}
+  mysql: {}
+  memcached:
+    provider: pecl
+    header_packages:
+      - libmemcached-dev
+  apc:
+    package_prefix: php-
+    settings:
+      apc.stat: 1
+      apc.stat_ctime: 1
+```
 
-* Install php with default settings
+See [the documentation](http://php.puppet.mayflower.de/php/extension.html)
+of the `php::extension` resource for all available parmeters and default
+values.
 
-        class { 'php': }
+### Defining php-fpm pools
 
-* Install a specific version of php package
+If different php-fpm pools are required, you can use `php::fpm::pool`
+resources. Use the parameter `$pools` from the class `php::fpm` to define
+`php::fpm::pool` resources as a hash from hiera.
 
-        class { 'php':
-          version => '1.0.1',
-        }
+If not defined in your hiera data, a single pool called `www` will be
+configured by default:
 
-* Remove php package
+```yaml
+php::fpm::pools:
+  www:
+    listen: 127.0.0.1:9000
+```
 
-        class { 'php':
-          absent => true
-        }
+For an overview of all possible parameters for `php::fpm::pool` resources
+please see [its documention](http://php.puppet.mayflower.de/php/fpm/pool.html).
 
-* Enable auditing without without making changes on existing php configuration files
+## Notes
 
-        class { 'php':
-          audit_only => true
-        }
+### Debian squeeze & Ubuntu precise come with PHP 5.3
 
-* Define nginx service to be notified on changes
+On Debian-based systems, we use `php5enmod` to enable extension-specific
+configuration. This script is only present in `php5` packages beginning with
+version 5.4. Furthermore, PHP 5.3 is not supported by upstream anymore.
 
-        class { 'php':
-          service => 'nginx'
-        }
+We strongly suggest you use a recent PHP version, even if you're using an
+older though still supported distribution release. Our default is to have
+`php::manage_repos` enabled to add apt sources for
+[Dotdeb](http://www.dotdeb.org/) on Debian and
+[ppa:ondrej/php5](https://launchpad.net/~ondrej/+archive/ubuntu/php5/) on
+Ubuntu with packages for the current stable PHP version closely tracking
+upstream.
 
-## USAGE - Module installation
+### Apache support
 
-* Install a new module
+Apache with `mod_php` is not supported by this module. Please use
+[puppetlabs/apache](https://forge.puppetlabs.com/puppetlabs/apache) instead.
 
-        php::module { "imagick": }
+We prefer using php-fpm. You can find an example Apache vhost in
+`manifests/apache_vhost.pp` that shows you how to use `mod_proxy_fcgi` to
+connect to php-fpm.
 
-* Install a specific version of a module:
+### FreeBSD support
 
-        php::module { "imagick":
-          version => '1.0.1';
-        }
+On FreeBSD systems we purge the system-wide `extensions.ini` in favour of
+per-module configuration files.
 
-* Remove php module
+Please also note that support for Composer and PHPUnit on FreeBSD is untested
+and thus likely incomplete.
 
-        php::module { "imagick":
-            absent => true,
-        }
+### Running the test suite
 
-* By default module package name is php-$title for RedHat and php5-$title . You can override this prefix.
+To run the tests install the ruby dependencies with `bundler` and execute
+`rake`:
 
-        php::module { "apc":
-          module_prefix => "php-"
-        }
+```
+bundle install --path vendor/bundle
+bundle exec rake
+```
 
-## USAGE - Module Configuration
+## Bugs & New Features
 
-* Configure php module to all SAPI
-        
-        php::mod { "mcrypt": }
+If you happen to stumble upon a bug, please feel free to create a pull request
+with a fix (optionally with a test), and a description of the bug and how it
+was resolved.
 
-  *__Note:__ `[name]` is filename without `.ini` extension from `/etc/php5/mods-available/<name>.ini`*
+Or if you're not into coding, simply create an issue adding steps to let us
+reproduce the bug and we will happily fix it.
 
-* Configure multiple php module to all SAPI
+If you have a good idea for a feature or how to improve this module in general,
+please create an issue to discuss it. We are very open to feedback. Pull
+requests are always welcome.
 
-        $mods = ["mcrypt", "mongo"]
-        php::mod { "$mods": }
+We hate orphaned and unmaintained Puppet modules as much as you do and
+therefore promise that we will continue to maintain this module and keep
+response times to issues short. If we happen to lose interest, we will write
+a big fat warning into this README to let you know.
 
-* Unconfigure php module to all SAPI
-        
-        php::mod { "xdebug"
-            disable => true,
-        }
+## License
 
-* Installing and configuring a Module. This will guarantee correct execution order in your classes
+The project is released under the permissive MIT license.
 
-        php::module { 'sqlite': } -> php::mod { 'sqlite3': }
+The source can be found at
+[github.com/mayflower/puppet-php](https://github.com/mayflower/puppet-php/).
 
-## USAGE - Pear Management
-
-* Install a pear package
-
-        php::pear::module { "XML_Util": }
-
-* Install a pear package from a remote repository
-
-        php::pear::module { 'PHPUnit':
-          repository  => 'pear.phpunit.de',
-          use_package => 'no',
-        }
-
-* Install a pear package will all dependencies (--alldeps)
-
-        php::pear::module { 'PHPUnit':
-          repository  => 'pear.phpunit.de',
-          alldeps => 'true',
-        }
-
-* Set a config option
-
-        php::pear::config { http_proxy: value => "myproxy:8080" }
-
-
-## USAGE - Pecl Management
-
-* Install a pecl package
-
-        php::pecl::module { "XML_Util": }
-
-* Install a pecl package from source specifying the preferred state (note that you must have the package 'make' installed on your system)
-
-        php::pecl::module { "xhprof":
-          use_package     => 'false',
-          preferred_state => 'beta',
-        }
-
-* Set a config option
-
-        php::pecl::config { http_proxy: value => "myproxy:8080" }
-
-* Auto-answer prompts for unattended-installation (where configure might used used for instance)
-
-        php::pecl::module { 'stomp':
-          use_package     => 'false',
-          auto_answer     => 'no\\n\\n',
-        }
-
-## USAGE - Overrides and Customizations
-* Use custom sources for main config file.
-
-        class { 'php':
-          source => [ "puppet:///modules/lab42/php/php.conf-${hostname}" , "puppet:///modules/lab42/php/php.conf" ],
-        }
-
-* Manage php.ini files on Debian and Suse derivatives. Here the main config file path (managed with the source/template params) defaults to /etc/php5/apache2/php.ini. To manage other files, either set a different path in config_file or use the php::conf define.
-
-        class { 'php':
-          config_file => '/etc/php5/apache2/php.ini',      # Default value on Ubuntu/Suse
-          template    => 'example42/php/php.ini-apache2.erb',
-        }
-
-        php::conf { 'php.ini-cli':
-          path     => '/etc/php5/cli/php.ini',
-          template => 'example42/php/php.ini-cli.erb',
-        }
-
-* Use custom source directory for the whole configuration dir
-
-        class { 'php':
-          source_dir       => 'puppet:///modules/lab42/php/conf/',
-          source_dir_purge => false, # Set to true to purge any existing file not present in $source_dir
-        }
-
-* Use custom template for main config file. Note that template and source arguments are alternative.
-
-        class { 'php':
-          template => 'example42/php/php.conf.erb',
-        }
-
-* Automatically include a custom subclass
-
-        class { 'php':
-          my_class => 'php::example42',
-        }
-
-
-
-
-
-[![Build Status](https://travis-ci.org/example42/puppet-php.png?branch=master)](https://travis-ci.org/example42/puppet-php)
+This Puppet module is being actively maintained by some fellow puppeteers at
+[Mayflower GmbH](https://mayflower.de).

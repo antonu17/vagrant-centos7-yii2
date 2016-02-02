@@ -11,7 +11,7 @@ include my_redis
 include my_nodejs
 include my_java
 include my_elasticsearch
-include my_composer
+include my_memcached
 
 class { 'my_finish':
   stage => last

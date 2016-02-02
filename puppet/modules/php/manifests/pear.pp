@@ -1,48 +1,53 @@
-# Class: php::pear
+# Install PEAR package manager
 #
-# Installs Pear for PHP module
+# === Parameters
 #
-# Usage:
-# include php::pear
-#
-# == Parameters
-#
-# Standard class parameters
-# Define the general class behaviour and customizations
+# [*ensure*]
+#   The PHP ensure of PHP pear to install and run pear auto_discover
 #
 # [*package*]
-#   Name of the package to install. Defaults to 'php-pear'
-#
-# [*version*]
-#   Version to install. Defaults to 'present'
-#
-# [*install_package*]
-#   Boolean. Determines if any package should be installed to support the PEAR functionality.
-#   Can be false if PEAR was already provided by another package or module.
-#   Default: true
-#
-# [*install_options*]
-#   An array of package manager install options. See $php::install_options
+#   The package name for PHP pear
 #
 class php::pear (
-  $package         = $php::package_pear,
-  $install_package = true,
-  $install_options = [],
-  $version         = 'present',
-  $path            = '/usr/bin:/usr/sbin:/bin:/sbin'
-  ) inherits php {
+  $ensure  = $::php::pear_ensure,
+  $package = undef,
+) inherits ::php::params {
 
-  $real_install_options = $install_options ? {
-    ''      => $php::install_options,
-    default => $install_options,
+  if $caller_module_name != $module_name {
+    warning('php::pear is private')
   }
 
-  if ( $install_package ) {
-    package { 'php-pear':
-      ensure          => $version,
-      name            => $package,
-      install_options => $real_install_options,
+  # Defaults for the pear package name
+  if $package == undef {
+    if $::osfamily == 'Debian' {
+      # Debian is a litte stupid: The pear package is called 'php-pear'
+      # even though others are called 'php5-fpm' or 'php5-dev'
+      $package_name = "php-${::php::params::pear_package_suffix}"
+    } elsif $::osfamily == 'FreeBSD' {
+      # On FreeBSD the package name is just 'pear'.
+      $package_name = $::php::params::pear_package_suffix
+    } else {
+      # This is the default for all other architectures
+      $package_name =
+        "${::php::package_prefix}${::php::params::pear_package_suffix}"
     }
+  } else {
+    $package_name = $package
   }
 
+  validate_string($ensure)
+  validate_string($package_name)
+
+  package { $package_name:
+    ensure  => $ensure,
+    require => Class['::php::cli'],
+  }
+
+  exec { '::php::pear::auto_discover':
+    command => 'pear config-set auto_discover 1 system',
+    unless  => 'pear config-get auto_discover system | grep -q 1',
+    path    => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/',
+                '/usr/local/bin', '/usr/local/sbin'],
+    require => Package[$package_name],
+  }
 }

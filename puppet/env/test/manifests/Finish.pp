@@ -7,13 +7,6 @@ class my_finish {
     creates => '/var/www/farm-market/frontend/web/index.php',
   }
 
-  exec { 'composer global require "fxp/composer-asset-plugin:~1.1.1"':
-    path        => '/usr/bin',
-    user        => 'developer',
-    environment => ['HOME=/var/www'],
-    creates     => '/var/www/.config/composer/vendor/fxp/composer-asset-plugin/composer.json',
-  }
-
   service { 'comet':
     ensure  => running,
     start   => '/var/www/node/startup.sh',
