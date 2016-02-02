@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "puppetlabs/centos-7.0-64-puppet"
   config.vm.network :private_network, ip: "192.168.33.10"
+  config.vm.synced_folder "home", "/var/www"
   config.vm.synced_folder "src", "/var/www/farm-market"
   config.vm.synced_folder "comet", "/var/www/node"
   config.vm.hostname = "torbor.dev"
