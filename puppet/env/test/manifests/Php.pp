@@ -39,10 +39,4 @@ class my_php {
     hasstatus  => true,
     hasrestart => true,
   }
-
-  class { 'composer':
-    command_name => 'composer',
-    target_dir   => '/usr/bin',
-    require      => Package['PhpModule_cli'],
-  }
 }

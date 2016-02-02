@@ -8,3 +8,4 @@ include my_redis
 include my_nodejs
 include my_java
 include my_elasticsearch
+include my_composer
