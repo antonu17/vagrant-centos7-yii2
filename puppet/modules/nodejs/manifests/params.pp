@@ -6,7 +6,7 @@ class nodejs::params {
   $repo_enable_src             = false
   $repo_ensure                 = 'present'
   $repo_pin                    = false
-  $repo_priority               = 'absent'
+  $repo_priority               = '1'
   $repo_proxy                  = 'absent'
   $repo_proxy_password         = 'absent'
   $repo_proxy_username         = 'absent'
