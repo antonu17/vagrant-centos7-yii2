@@ -1,7 +1,7 @@
 class my_finish {
 
   exec { 'composer global require "fxp/composer-asset-plugin:~1.1.1"':
-    path        => '/usr/local/bin',
+    path        => '/usr/bin:/usr/local/bin',
     user        => 'developer',
     environment => ['HOME=/var/www'],
     creates     => '/var/www/.config/composer/vendor/fxp/composer-asset-plugin/composer.json',

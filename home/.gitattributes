@@ -1,0 +1,3 @@
+comet -lf
+.bashrc -lf
+.bash_profile -lf
