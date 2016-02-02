@@ -13,6 +13,9 @@ include my_java
 include my_elasticsearch
 include my_memcached
 
+class { 'my_cron':
+  stage => last
+}
 class { 'my_finish':
   stage => last
 }
