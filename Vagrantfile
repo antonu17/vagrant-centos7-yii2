@@ -16,10 +16,10 @@ Vagrant.configure("2") do |config|
   config.hostmanager.aliases = %w(admin.torbor.dev)
 
   config.vm.provider :virtualbox do |vb|
-    vb.customize [
-      "modifyvm", :id,
-      "--memory", "2048",
-    ]
+    vb.name   = "torbor.dev"   # vm name
+    vb.memory = "2048"         # 2Gb RAM
+    vb.cpus   = "2"            # 2 core
+    #vb.cpuexecutioncap = "50"  # Limit cpu load to 50%
   end
 
   config.vm.provision :hostmanager
