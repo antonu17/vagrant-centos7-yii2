@@ -1,5 +1,10 @@
 class my_system {
 
+  exec { 'yum update':
+    command => 'yum clean all; yum -q -y update && touch /root/yumupd',
+    onlyif  => 'test -e /root/yumupd'
+  } ->
+
   user { 'developer':
     allowdupe        => true,
     groups           => ['vagrant'],
@@ -8,13 +13,14 @@ class my_system {
     home             => '/var/www',
     password         => pw_hash('1q2w3e4r', 'SHA-512', 'yvf9714yr'),
     shell            => '/bin/bash',
-  }
+  } ->
 
   file { '/var/www':
     mode => '777',
-  }
+  } ->
 
   file { "/etc/localtime":
-    source  => "file:///usr/share/zoneinfo/Europe/Moscow",
+    ensure => link,
+    target => "file:///usr/share/zoneinfo/Europe/Moscow",
   }
 }
