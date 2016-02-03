@@ -2,7 +2,8 @@ class my_system {
 
   exec { 'yum update':
     command => 'yum clean all; yum -q -y update --exclude=kernel* && touch /root/yumupd',
-    onlyif  => 'test -e /root/yumupd'
+    onlyif  => 'test ! -e /root/yumupd',
+    path    => '/bin:/sbin:/usr/sbin',
   } ->
 
   user { 'developer':
