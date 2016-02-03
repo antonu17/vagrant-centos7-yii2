@@ -7,6 +7,7 @@ class my_php {
   }
 
   php::extension { 'mysql': }
+  php::extension { 'pgsql': }
   php::extension { 'gd': }
   php::extension { 'mbstring': }
   php::extension { 'mcrypt': }
@@ -21,6 +22,12 @@ class my_php {
     file  => '/etc/php.ini',
     key   => 'Date/date.timezone',
     value => 'Europe/Moscow',
+  }
+
+  php::config::setting { 'PHP/expose_php':
+    file  => '/etc/php.ini',
+    key   => 'PHP/expose_php',
+    value => 'Off',
   }
 
   php::config::setting { 'log_errors':
