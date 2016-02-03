@@ -1,7 +1,7 @@
 class my_system {
 
   exec { 'yum update':
-    command => 'yum clean all; yum -q -y update && touch /root/yumupd',
+    command => 'yum clean all; yum -q -y update --exclude=kernel* && touch /root/yumupd',
     onlyif  => 'test -e /root/yumupd'
   } ->
 
