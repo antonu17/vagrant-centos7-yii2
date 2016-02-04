@@ -23,7 +23,7 @@ class my_finish {
   }
 
   file { '/etc/init.d/comet':
-    ensure => 'present',
+    ensure => present,
     source => '/var/www/comet',
     mode   => '755',
   }
@@ -35,6 +35,6 @@ class my_finish {
     start      => '/etc/init.d/comet start',
     stop       => '/etc/init.d/comet stop',
     restart    => '/etc/init.d/comet restart',
-    hasstatus  => false,
+    hasstatus  => true,
   }
 }

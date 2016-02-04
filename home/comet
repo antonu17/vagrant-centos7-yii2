@@ -12,8 +12,8 @@
 #
 # chkconfig:         2345 90 60
 # Provides:          /var/www/node/index.js
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog $network var-www-node.mount
+# Required-Stop:     $remote_fs $syslog $network var-www-node.mount
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: forever running /var/www/node/index.js
@@ -68,6 +68,7 @@ stop() {
 status() {
    echo -n "Status $nodeApp"
    $foreverApp list
+   pgrep $nodeApp
    RETVAL=$?
 }
 
