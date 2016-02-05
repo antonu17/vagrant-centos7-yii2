@@ -13,4 +13,12 @@ class my_nodejs {
     ensure   => 'present',
     provider => 'npm',
   }
+  package { 'express':
+    ensure   => 'present',
+    provider => 'npm',
+  }
+  package { 'bower':
+    ensure   => 'present',
+    provider => 'npm',
+  }
 }
