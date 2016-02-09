@@ -60,19 +60,5 @@ class my_mariadb {
         'lower_case_table_names' => '1',
       },
     },
-  } ->
-  exec { 'torbor_sql':
-    path        => '/usr/bin:/usr/sbin',
-    provider    => shell,
-    logoutput   => true,
-    command     => 'for sql in /vagrant/dump/torbor/*.sql; do echo "Applying ${sql}"; mysql -uroot -proot torbor < ${sql}; done && touch /var/lib/mysql/.torborsql',
-    onlyif      => 'test ! -e /var/lib/mysql/.torborsql',
-  } ->
-  exec { 'chemical_sql':
-    path        => '/usr/bin:/usr/sbin',
-    provider    => shell,
-    logoutput   => true,
-    command     => 'for sql in /vagrant/dump/chemical/*.sql; do echo "Applying ${sql}"; mysql -uroot -proot chemical < ${sql}; done && touch /var/lib/mysql/.chemicalsql',
-    onlyif      => 'test ! -e /var/lib/mysql/.chemicalsql',
   }
 }
